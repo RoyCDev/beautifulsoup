@@ -1048,9 +1048,16 @@ class BeautifulSoup(Tag):
         
         if tag is None:
             return tag
-        # added for milestone 2
-        if self.replacer and tag.name == self.replacer.og_tag:
-            tag.name = self.replacer.alt_tag
+        # added for milestone 2, modified for milestone 3
+        if self.replacer: 
+            if tag.name == self.replacer.og_tag:
+                tag.name = self.replacer.alt_tag
+            if self.replacer.name_xformer:
+                tag.name = self.replacer.name_xformer(tag)
+            if self.replacer.attrs_xformer:
+                tag.attrs = self.replacer.attrs_xformer(tag)
+            if self.replacer.xformer:
+                self.replacer.xformer(tag) 
 
         if self._most_recent_element is not None:
             self._most_recent_element.next_element = tag
@@ -1069,9 +1076,16 @@ class BeautifulSoup(Tag):
         # print("End tag: " + name)
         self.endData()
 
-        # added for milestone 2
-        if self.replacer and name == self.replacer.og_tag:
-            name = self.replacer.alt_tag
+        # added for milestone 2, modified for milestone 3
+        if self.replacer:
+            placeholderTag = Tag(name=name, attrs={}) 
+            if self.replacer.name_xformer:
+                name = self.replacer.name_xformer(placeholderTag)
+            if self.replacer.xformer: # in case xformer changes tag's name
+                self.replacer.xformer(placeholderTag)
+                name = placeholderTag.name
+            if name == self.replacer.og_tag:
+                name = self.replacer.alt_tag
             
         self._popToTag(name, nsprefix)
 

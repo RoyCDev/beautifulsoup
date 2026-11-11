@@ -309,12 +309,34 @@ class StringMatchRule(MatchRule):
 
     function: Optional[_StringMatchFunction]
 
-# added for milestone 2
+# added for milestone 2, modified for milestone 3
 class SoupReplacer(ElementFilter):
     """ Goal: all occurrences of og-tag should be replaced by alt-tag during parsing"""
-    def __init__(self, og_tag, alt_tag):
+    def __init__(
+            self, 
+            og_tag=None, 
+            alt_tag=None, 
+            name_xformer=None, 
+            attrs_xformer=None, 
+            xformer=None
+    ):
+        # since all arguments are optional now, need to check if user provided the right ones
+        # milestone 2 way: need og_tag, alt_tag, no xformers
+        # milestone 3 way: need xformer(s), no og_tag and alt_tag
+
+        xformer_provided = name_xformer is not None or attrs_xformer is not None or xformer is not None
+        if xformer_provided: # milestone 3 way
+            if og_tag is not None or alt_tag is not None:
+                return ValueError("Either provide both og_tag and alt_tag or just the xformers")
+        else: # milestone 2 way
+            if og_tag is None or alt_tag is None:
+                return ValueError("Must provide both og_tag and alt_tag")
+      
         self.og_tag = og_tag
         self.alt_tag = alt_tag
+        self.name_xformer = name_xformer
+        self.attrs_xformer = attrs_xformer
+        self.xformer = xformer
 
 class SoupStrainer(ElementFilter):
     """The `ElementFilter` subclass used internally by Beautiful Soup.
