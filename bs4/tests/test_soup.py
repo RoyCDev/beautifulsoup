@@ -41,6 +41,53 @@ from typing import Type
 
 
 class TestConstructor(SoupTest):
+    # added for milestone 4
+    def test_soup_iterable_return_types(self):
+        data = "<div><ul><li><img src=''>Image1</li><li><img src=''>Image2</li></ul></div>"
+        soup = self.soup(data)
+
+        for node in soup:
+            assert(type(node) == Tag or type(node) == NavigableString)
+
+    def test_soup_iterable_size(self):
+        data = "<div><ul><li><img src=''>Image1</li><li><img src=''>Image2</li></ul></div>"
+        soup = self.soup(data)
+
+        size = 0;
+        for node in soup:
+            size += 1
+
+        # div, ul, first li, first img, "Image1", second li, second img, "Image2"
+        assert(8 == size) 
+
+    def test_soup_iterable_can_iterate_twice(self):
+        data = "<div><ul><li><img src=''>Image1</li><li><img src=''>Image2</li></ul></div>"
+        soup = self.soup(data)
+
+        size = 0;
+        for node in soup:
+            size += 1
+        assert(8 == size) 
+
+        size = 0;
+        for node in soup:
+            size += 1
+        assert(8 == size) 
+
+    def test_soup_iterable_empty(self):
+        soup = self.soup("")
+        size = 0;
+        for node in soup:
+            size += 1
+        assert(0 == size) 
+
+    def test_soup_iterable_only_text(self):
+        soup = self.soup("html without any tags, this should count as 1 node")
+        size = 0;
+        for node in soup:
+            size += 1
+        assert(1 == size) 
+
     def test_short_unicode_input(self):
         data = "<h1>éé</h1>"
         soup = self.soup(data)

@@ -207,6 +207,10 @@ class BeautifulSoup(Tag):
     #: could not be represented in Unicode.
     contains_replacement_characters: bool
 
+    # added for milestone 4
+    def __iter__(self):
+        return self.descendants
+
     def __init__(
         self,
         markup: _IncomingMarkup = "",
